@@ -1,0 +1,71 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+variables:
+  resourceGroupName: coverity
+  storageAccountName: coveritystore
+  fileShareName: cov-analysis-share
+  mntPath: /mnt/$(storageAccountName)/$(fileShareName)
+  COVERITY_TOOL_HOME: $(Agent.BuildDirectory)/cov-analysis
+  MAVEN_CACHE_FOLDER: $(Pipeline.Workspace)/.m2/repository
+  MAVEN_OPTS: '-Dmaven.repo.local=$(MAVEN_CACHE_FOLDER)'
+
+trigger:
+- master
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+# Mount share with Coverity analysis installer(s)
+- task: AzureCLI@2
+  inputs:
+    azureSubscription: azure-connection
+    scriptType: bash
+    scriptLocation: inlineScript
+    inlineScript: |
+      sh mount-coverity.sh
+      df -h
+  displayName: Azure CLI
+
+# Copy and install Coverity analysis package
+- script: |
+    cd $(Agent.BuildDirectory)
+    cp $(mntPath)/cov-analysis-linux64-2019.12.tar.gz .
+    cp $(mntPath)/cov-analysis-linux64-2019.12/bin/license.dat .
+    tar -xzf cov-analysis-linux64-2019.12.tar.gz
+    mv cov-analysis-linux64-2019.12 cov-analysis
+    cp license.dat ./cov-analysis/bin
+  displayName: 'Install Coverity'
+
+# Configure Coverity
+- script: $(COVERITY_TOOL_HOME)/bin/cov-configure --java
+  displayName: 'Configure Coverity'
+
+# Cache Maven local repo to speed things up
+- task: Cache@2
+  inputs:
+    key: 'maven | "$(Agent.OS)" | **/pom.xml'
+    restoreKeys: |
+      maven | "$(Agent.OS)"
+      maven
+    path: $(MAVEN_CACHE_FOLDER)
+  displayName: Cache Maven local repo
+
+# Coverity scan
+- task: synopsys-coverity@1
+  inputs:
+    coverityService: 'coverity-vm'
+    projectName: 'Azure Commons Fileupload'
+    streamName: 'az-commons-fileupload'
+    checkIssues: true
+    issueView: 'High Impact Outstanding'
+    issueStatus: 'failure'
+    coverityBuildDirectory: '$(Build.Repository.LocalPath)'
+    buildCommand: 'mvn -Drat.skip=true -DskipTests=true package'
+    allowUntrusted: true
+    coverityRunType: 'buildanalyzecommit'
+    customCommandArgs: true
+    covAnalyzeArgs: '--all --webapp-security --webapp-security-aggressiveness-level high --enable-audit-mode'
