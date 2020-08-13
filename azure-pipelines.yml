@@ -50,8 +50,9 @@ steps:
     coverityService: 'coverity-vm'
     projectName: 'Corona Warn App - Android'
     streamName: 'az-cwa-app-android'
-    checkIssues: false
-    issueView: 'Outstanding Issues'
+    checkIssues: true
+    issueView: 'Outstanding High Security Risks'
+    issueStatus: 'failure'
     coverityBuildDirectory: '$(Build.Repository.LocalPath)'
     buildCommand: './gradlew --no-daemon assembleDeviceRelease'
     allowUntrusted: true
