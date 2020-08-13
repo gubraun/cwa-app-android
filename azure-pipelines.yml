@@ -41,31 +41,21 @@ steps:
   displayName: 'Install Coverity'
 
 # Configure Coverity
-- script: $(COVERITY_TOOL_HOME)/bin/cov-configure --java
+- script: $(COVERITY_TOOL_HOME)/bin/cov-configure --kotlin
   displayName: 'Configure Coverity'
-
-# Cache Maven local repo to speed things up
-- task: Cache@2
-  inputs:
-    key: 'maven | "$(Agent.OS)" | **/pom.xml'
-    restoreKeys: |
-      maven | "$(Agent.OS)"
-      maven
-    path: $(MAVEN_CACHE_FOLDER)
-  displayName: Cache Maven local repo
 
 # Coverity scan
 - task: synopsys-coverity@1
   inputs:
     coverityService: 'coverity-vm'
-    projectName: 'Azure Commons Fileupload'
-    streamName: 'az-commons-fileupload'
-    checkIssues: true
-    issueView: 'High Impact Outstanding'
-    issueStatus: 'failure'
+    projectName: 'Corona Warn App - Android'
+    streamName: 'az-cwa-app-android'
+    checkIssues: false
+    issueView: 'Outstanding Issues'
     coverityBuildDirectory: '$(Build.Repository.LocalPath)'
-    buildCommand: 'mvn -Drat.skip=true -DskipTests=true package'
+    buildCommand: './gradlew --no-daemon assembleDeviceRelease'
     allowUntrusted: true
     coverityRunType: 'buildanalyzecommit'
     customCommandArgs: true
-    covAnalyzeArgs: '--all --webapp-security --webapp-security-aggressiveness-level high --enable-audit-mode'
+    covAnalyzeArgs: '--webapp-security --android-security --distrust-all --webapp-security-aggressiveness-level high --enable-audit-checkers --enable-audit-dataflow'
+    covBuildArgs: '--instrument --fs-capture-search .'
