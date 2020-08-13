@@ -58,4 +58,4 @@ steps:
     coverityRunType: 'buildanalyzecommit'
     customCommandArgs: true
     covAnalyzeArgs: '--webapp-security --android-security --distrust-all --webapp-security-aggressiveness-level high --enable-audit-checkers --enable-audit-dataflow'
-    covBuildArgs: '--instrument --fs-capture-search .'
+    covBuildArgs: '--fs-capture-search .'
