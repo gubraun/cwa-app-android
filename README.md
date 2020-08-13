@@ -7,7 +7,7 @@
     <a href="https://circleci.com/gh/corona-warn-app/cwa-app-android" title="Build Status"><img src="https://circleci.com/gh/corona-warn-app/cwa-app-android.png?circle-token=c26c689ad7833b8c0786752d3e65f56f25f906f3&style=shield"></a>
    <a href="https://sonarcloud.io/component_measures?id=corona-warn-app_cwa-app-android&metric=Coverage&view=list" title="Coverage"><img src="https://sonarcloud.io/api/project_badges/measure?project=corona-warn-app_cwa-app-android&metric=coverage"></a>
     <a href="./LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg"></a>
-
+    <a href="https://dev.azure.com/gubraun/cwa-app-android/_build/latest?definitionId=6&branchName=dev" title="Coverity"><img src="https://dev.azure.com/gubraun/cwa-app-android/_apis/build/status/gubraun.cwa-app-android?branchName=dev"></a>
 </p>
 
 <p align="center">
