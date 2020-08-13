@@ -11,7 +11,7 @@ variables:
   COVERITY_TOOL_HOME: $(Agent.BuildDirectory)/cov-analysis
   
 trigger:
-- master
+- dev
 
 pool:
   vmImage: 'ubuntu-latest'
