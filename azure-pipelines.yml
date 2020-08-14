@@ -4,10 +4,6 @@
 # https://aka.ms/yaml
 
 variables:
-  resourceGroupName: coverity
-  storageAccountName: coveritystore
-  fileShareName: cov-analysis-share
-  mntPath: /mnt/$(storageAccountName)/$(fileShareName)
   COVERITY_TOOL_HOME: $(Agent.BuildDirectory)/cov-analysis
   
 trigger:
